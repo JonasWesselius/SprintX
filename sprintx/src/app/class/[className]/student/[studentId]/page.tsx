@@ -2,45 +2,15 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { mockStudents, mockProjects, mockStudentProjects } from '../../../../lib/mockData';
-import Link from 'next/link';
-
-interface ProjectCardProps {
-  project: typeof mockProjects[keyof typeof mockProjects];
-  studentId: number;
-}
-
-function ProjectCard({ project, studentId }: ProjectCardProps) {
-  return (
-    <Link href={`/class/student/project/${project.id}`} className="block">
-      <div className="p-4 border rounded-lg shadow hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
-        <h3 className="font-bold text-lg">{project.title}</h3>
-        <p className="text-gray-600 dark:text-gray-300 mb-2">{project.description}</p>
-        <div className="flex gap-2">
-          <span className={`px-2 py-1 rounded-full text-sm ${
-            project.status === 'completed' 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-yellow-100 text-yellow-800'
-          }`}>
-            {project.status === 'completed' ? 'Afgerond' : 'In uitvoering'}
-          </span>
-          {project.grade && (
-            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-              {project.grade}%
-            </span>
-          )}
-        </div>
-      </div>
-    </Link>
-  );
-}
+import { mockStudents, mockProjects, mockStudentProjects, type ClassName, type StudentId } from '../../../../lib/mockData';
+import ProjectCard from '@/app/components/ProjectCard';
 
 export default function StudentPortfolio() {
   const [activeTab, setActiveTab] = useState('current');
   const params = useParams();
   const router = useRouter();
-  const studentId = parseInt(params.studentId as string);
-  const className = params.className as string;
+  const studentId = parseInt(params.studentId as string) as StudentId;
+  const className = params.className as ClassName;
 
   const student = mockStudents[className]?.find(s => s.id === studentId);
   const studentProjects = mockStudentProjects[studentId] || [];
@@ -69,7 +39,7 @@ export default function StudentPortfolio() {
         >
           ← Terug
         </button>
-        <h1 className="text-2xl font-bold">{student.name}'s Portfolio</h1>
+        <h1 className="text-2xl font-bold">{student.name}&apos;s Portfolio</h1>
       </div>
       
       <div className="flex gap-4 mb-6">
@@ -101,7 +71,6 @@ export default function StudentPortfolio() {
             <ProjectCard 
               key={project.id} 
               project={project}
-              studentId={studentId}
             />
           ))
         ) : (

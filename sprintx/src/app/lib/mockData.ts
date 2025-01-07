@@ -1,4 +1,11 @@
-export const mockStudents = {
+export type ClassName = "2tca" | "2tcb" | "3tca" | "3tcb" | "4tca" | "4tcb";
+
+export const mockStudents: Record<ClassName, Array<{
+  id: number;
+  name: string;
+  class: string;
+  yearStarted: number;
+}>> = {
   "2tca": [
     { id: 1, name: "Jan de Vries", class: "2tca", yearStarted: 2023 },
     { id: 2, name: "Emma Bakker", class: "2tca", yearStarted: 2023 },
@@ -25,7 +32,28 @@ export const mockStudents = {
   ],
 };
 
-export const mockProjects = {
+type BaseProject = {
+  id: string;
+  title: string;
+  description: string;
+  exampleWork: string;
+  yearLevel: number;
+};
+
+type CompletedProject = BaseProject & {
+  status: "completed";
+  grade: number;
+  studentWork: string;
+  teacherFeedback: string;
+};
+
+type InProgressProject = BaseProject & {
+  status: "in_progress";
+};
+
+type Project = CompletedProject | InProgressProject;
+
+export const mockProjects: Record<string, Project> = {
   1: {
     id: "1",
     title: "Metalen Doos Project",
@@ -74,7 +102,9 @@ export const mockProjects = {
   }
 };
 
-export const mockStudentProjects = {
+export type StudentId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+
+export const mockStudentProjects: Record<StudentId, string[]> = {
   1: ["1", "2"],
   2: ["2"],
   3: ["1"],
@@ -87,4 +117,6 @@ export const mockStudentProjects = {
   10: ["5", "3", "1"],
   11: ["5", "4", "1", "2"],
   12: ["5", "3", "2"]
-}; 
+};
+
+export type { Project, CompletedProject, InProgressProject }; 

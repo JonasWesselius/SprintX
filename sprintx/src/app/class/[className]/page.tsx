@@ -2,12 +2,12 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import StudentCard from '../../components/StudentCard';
-import { mockStudents } from '../../lib/mockData';
+import { mockStudents, type ClassName } from '../../lib/mockData';
 
 export default function ClassPage() {
   const params = useParams();
   const router = useRouter();
-  const className = params.className as string;
+  const className = params.className as ClassName;
   const students = mockStudents[className] || [];
 
   return (

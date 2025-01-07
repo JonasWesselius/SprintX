@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { mockProjects } from '../../../../lib/mockData';
+import { mockProjects, type Project, type CompletedProject } from '../../../../lib/mockData';
 import Tabs from '@/app/components/Tabs';
+
+function isCompletedProject(project: Project): project is CompletedProject {
+  return project.status === "completed";
+}
 
 export default function ProjectPage() {
   const params = useParams();
@@ -25,7 +29,7 @@ export default function ProjectPage() {
           onClick={() => router.back()}
           className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded transition-colors"
         >
-          ← Back
+          ← Terug
         </button>
         <h1 className="text-2xl font-bold">{projectData.title}</h1>
       </div>
@@ -39,9 +43,9 @@ export default function ProjectPage() {
         }`}>
           {projectData.status === 'completed' ? 'Afgerond' : 'In uitvoering'}
         </span>
-        {projectData.grade && (
+        {isCompletedProject(projectData) && (
           <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-            Grade: {projectData.grade}%
+            Cijfer: {projectData.grade}%
           </span>
         )}
       </div>
@@ -74,7 +78,7 @@ export default function ProjectPage() {
           <div>
             <h2 className="text-xl font-semibold mb-4">Student werk</h2>
             <div className="prose dark:prose-invert max-w-none">
-              {projectData.studentWork ? (
+              {isCompletedProject(projectData) ? (
                 <p>{projectData.studentWork}</p>
               ) : (
                 <p className="text-gray-500 italic">Geen werk ingeleverd.</p>
@@ -87,14 +91,12 @@ export default function ProjectPage() {
           <div>
             <h2 className="text-xl font-semibold mb-4">Docent Feedback</h2>
             <div className="prose dark:prose-invert max-w-none">
-              {projectData.teacherFeedback ? (
+              {isCompletedProject(projectData) ? (
                 <>
                   <p>{projectData.teacherFeedback}</p>
-                  {projectData.grade && (
-                    <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900 rounded">
-                      <p className="font-semibold">Eindcijfer: {projectData.grade}%</p>
-                    </div>
-                  )}
+                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900 rounded">
+                    <p className="font-semibold">Eindcijfer: {projectData.grade}%</p>
+                  </div>
                 </>
               ) : (
                 <p className="text-gray-500 italic">Geen feedback geleverd.</p>

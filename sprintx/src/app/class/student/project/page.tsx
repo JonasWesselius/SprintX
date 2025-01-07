@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { mockProjects } from '../../../lib/mockData';
+import { mockProjects, type Project, type CompletedProject } from '../../../lib/mockData';
 import Tabs from '@/app/components/Tabs';
+
+function isCompletedProject(project: Project): project is CompletedProject {
+  return project.status === "completed";
+}
 
 export default function ProjectPage() {
   const { project } = useParams();
@@ -20,7 +24,15 @@ export default function ProjectPage() {
     <div className="container mx-auto p-6">
       {/* Project Header */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-        <h1 className="text-2xl font-bold mb-2">{projectData.title}</h1>
+        <div className="flex items-center gap-4 mb-4">
+          <button 
+            onClick={() => router.back()}
+            className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded transition-colors"
+          >
+            ← Terug
+          </button>
+          <h1 className="text-2xl font-bold">{projectData.title}</h1>
+        </div>
         <div className="flex gap-4 items-center mb-4">
           <span className={`px-3 py-1 rounded-full text-sm ${
             projectData.status === 'completed' 
@@ -29,9 +41,9 @@ export default function ProjectPage() {
           }`}>
             {projectData.status === 'completed' ? 'Completed' : 'In Progress'}
           </span>
-          {projectData.grade && (
+          {isCompletedProject(projectData) && (
             <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-              Grade: {projectData.grade}%
+              Cijfer: {projectData.grade}%
             </span>
           )}
         </div>
@@ -62,9 +74,13 @@ export default function ProjectPage() {
 
         {activeTab === 'submission' && (
           <div>
-            <h2 className="text-xl font-semibold mb-4">Student Submission</h2>
+            <h2 className="text-xl font-semibold mb-4">Student werk</h2>
             <div className="prose dark:prose-invert max-w-none">
-              {projectData.studentWork || 'No work submitted yet.'}
+              {isCompletedProject(projectData) ? (
+                <p>{projectData.studentWork}</p>
+              ) : (
+                <p className="text-gray-500 italic">Geen werk ingeleverd.</p>
+              )}
             </div>
           </div>
         )}
@@ -73,7 +89,16 @@ export default function ProjectPage() {
           <div>
             <h2 className="text-xl font-semibold mb-4">Docent Feedback</h2>
             <div className="prose dark:prose-invert max-w-none">
-              {projectData.teacherFeedback || 'No feedback provided yet.'}
+              {isCompletedProject(projectData) ? (
+                <>
+                  <p>{projectData.teacherFeedback}</p>
+                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900 rounded">
+                    <p className="font-semibold">Eindcijfer: {projectData.grade}%</p>
+                  </div>
+                </>
+              ) : (
+                <p className="text-gray-500 italic">Geen feedback geleverd.</p>
+              )}
             </div>
           </div>
         )}

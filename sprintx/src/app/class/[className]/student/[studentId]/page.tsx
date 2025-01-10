@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { mockStudents, mockProjects, mockStudentProjects, type ClassName, type StudentId } from '../../../../lib/mockData';
+import { mockStudents, mockProjects, mockStudentProjects, type ClassName, type StudentId, type Subject } from '../../../../lib/mockData';
 import ProjectCard from '@/app/components/ProjectCard';
 
 export default function StudentPortfolio() {
   const [activeTab, setActiveTab] = useState('current');
+  const [activeSubject, setActiveSubject] = useState<Subject>('metaal');
   const params = useParams();
   const router = useRouter();
   const studentId = parseInt(params.studentId as string) as StudentId;
@@ -19,11 +20,11 @@ export default function StudentPortfolio() {
   // Filter projects based on active tab and student's year
   const currentYear = parseInt(className[0]); // Gets the year from class name (e.g., "3tca" -> 3)
   const filteredProjects = allProjects.filter(project => {
-    if (activeTab === 'current') {
-      return project.yearLevel === currentYear;
-    } else {
-      return project.yearLevel < currentYear;
-    }
+    const yearMatches = activeTab === 'current' 
+      ? project.yearLevel === currentYear
+      : project.yearLevel < currentYear;
+    
+    return yearMatches && project.subject === activeSubject;
   });
 
   if (!student) {
@@ -40,6 +41,22 @@ export default function StudentPortfolio() {
           ← Terug
         </button>
         <h1 className="text-2xl font-bold">{student.name}&apos;s Portfolio</h1>
+      </div>
+      
+      <div className="flex gap-4 mb-6">
+        {(['metaal', 'hout', 'elektro', 'engineering'] as Subject[]).map(subject => (
+          <button
+            key={subject}
+            className={`px-4 py-2 rounded transition-colors ${
+              activeSubject === subject
+                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveSubject(subject)}
+          >
+            {subject.charAt(0).toUpperCase() + subject.slice(1)}
+          </button>
+        ))}
       </div>
       
       <div className="flex gap-4 mb-6">
@@ -74,7 +91,7 @@ export default function StudentPortfolio() {
             />
           ))
         ) : (
-          <p>Geen projecten gevonden.</p>
+          <p>Geen projecten gevonden voor {activeSubject}.</p>
         )}
       </div>
     </div>

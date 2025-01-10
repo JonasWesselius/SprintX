@@ -20,7 +20,7 @@ function Header() {
     <header className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white p-4 z-50 shadow-md h-15">
       <div className="container mx-auto flex justify-center items-center">
         <h1 className="text-4xl font-bold">
-          <Link href="/">Metaal</Link>
+          <Link href="/">Skillz</Link>
         </h1>
       </div>
     </header>

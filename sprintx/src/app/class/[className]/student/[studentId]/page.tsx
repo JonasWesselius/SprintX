@@ -44,7 +44,7 @@ export default function StudentPortfolio() {
       </div>
       
       <div className="flex gap-4 mb-6">
-        {(['metaal', 'hout', 'elektro', 'engineering'] as Subject[]).map(subject => (
+        {(['metaal', 'hout', 'bouw', 'at'] as Subject[]).map(subject => (
           <button
             key={subject}
             className={`px-4 py-2 rounded transition-colors ${
